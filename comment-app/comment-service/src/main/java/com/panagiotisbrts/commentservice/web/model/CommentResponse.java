@@ -3,6 +3,8 @@ package com.panagiotisbrts.commentservice.web.model;
 
 import lombok.*;
 
+import java.time.OffsetDateTime;
+
 
 /**
  * @author Panagiotis_Baroutas
@@ -13,8 +15,9 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CommentRequest {
+public class CommentResponse {
 
+    private Long id;
     private String commentText;
-
+    private OffsetDateTime createdDate;
 }

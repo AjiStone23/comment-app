@@ -2,11 +2,14 @@ package com.panagiotisbrts.commentservice.services;
 
 import com.panagiotisbrts.commentservice.domain.Comment;
 import com.panagiotisbrts.commentservice.repositories.CommentRepository;
+import com.panagiotisbrts.commentservice.web.mappers.CommentMapper;
+import com.panagiotisbrts.commentservice.web.model.CommentDto;
 import com.panagiotisbrts.commentservice.web.model.CommentRequest;
 import org.springframework.stereotype.Service;
 
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,9 +19,11 @@ import java.util.List;
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
+    private final CommentMapper commentMapper;
 
-    public CommentServiceImpl(CommentRepository commentRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, CommentMapper commentMapper) {
         this.commentRepository = commentRepository;
+        this.commentMapper = commentMapper;
     }
 
     @Override
@@ -32,7 +37,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Comment> getComments() {
-       return commentRepository.findAll();
+    public List<CommentDto> getComments() {
+
+        List<CommentDto> commentDtoList = new ArrayList<>();
+
+        List<Comment> commentsList = commentRepository.findAll();
+
+        commentsList.forEach(comment ->  commentDtoList.add(commentMapper.commentToCommentDto(comment)));
+
+        return commentDtoList;
     }
 }
