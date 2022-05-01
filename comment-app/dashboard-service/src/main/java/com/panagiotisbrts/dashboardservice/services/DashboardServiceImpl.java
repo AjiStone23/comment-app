@@ -24,10 +24,9 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public List<CommentResponse> getComments() {
-        log.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 
-        CommentResponse[] commentsarr = restTemplate.getForObject("http://127.0.0.1:8080/api/v1/comments", CommentResponse[].class);
-        log.info(commentsarr.toString());
+        CommentResponse[] commentsarr = restTemplate.getForObject("http://COMMENT-SERVICE/api/v1/comments", CommentResponse[].class);
+
         return Arrays.asList(commentsarr);
     }
 }
