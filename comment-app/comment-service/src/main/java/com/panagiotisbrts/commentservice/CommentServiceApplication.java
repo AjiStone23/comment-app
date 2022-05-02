@@ -8,11 +8,17 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 /**
  * @author Panagiotis_Baroutas
  */
-@SpringBootApplication
+@SpringBootApplication(
+        scanBasePackages = {
+                "com.panagiotisbrts.commentservice.config",
+                "com.panagiotisbrts.amqp",
+        })
 @EnableEurekaClient
 @EnableFeignClients(basePackages = "com.panagiotisbrts.clients")
 public class CommentServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(CommentServiceApplication.class, args);
     }
+
+
 }

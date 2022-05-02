@@ -1,12 +1,13 @@
 package com.panagiotisbrts.dashboardservice.services;
 
-import com.panagiotisbrts.dashboardservice.web.model.CommentDto;
-import com.panagiotisbrts.dashboardservice.web.model.CommentResponse;
+import com.panagiotisbrts.amqp.RabbitMQMessageProducer;
+import com.panagiotisbrts.clients.commentservice.CommentClient;
+import com.panagiotisbrts.clients.commentservice.CommentResponse;
+import com.panagiotisbrts.dashboardservice.web.model.CommentRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -16,17 +17,27 @@ import java.util.List;
 @Slf4j
 public class DashboardServiceImpl implements DashboardService {
 
-    private final RestTemplate restTemplate;
 
-    public DashboardServiceImpl(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    private final CommentClient commentClient;
+    private final RabbitMQMessageProducer rabbitMQMessageProducer;
+
+    public DashboardServiceImpl(RestTemplate restTemplate, CommentClient commentClient, RabbitMQMessageProducer rabbitMQMessageProducer) {
+        this.commentClient = commentClient;
+        this.rabbitMQMessageProducer = rabbitMQMessageProducer;
     }
 
     @Override
     public List<CommentResponse> getComments() {
 
-        CommentResponse[] commentsarr = restTemplate.getForObject("http://COMMENT-SERVICE/api/v1/comments", CommentResponse[].class);
+        List<CommentResponse> commentList = commentClient.getComments().getBody();
+        return commentList;
+    }
 
-        return Arrays.asList(commentsarr);
+
+    @Override
+    public void addComment(CommentRequest commentRequest) {
+
+        rabbitMQMessageProducer.publish(commentRequest, "internal.exchange", "internal.comment.routing-key");
+
     }
 }

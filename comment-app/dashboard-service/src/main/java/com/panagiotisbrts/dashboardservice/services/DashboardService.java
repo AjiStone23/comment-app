@@ -1,7 +1,7 @@
 package com.panagiotisbrts.dashboardservice.services;
 
-import com.panagiotisbrts.dashboardservice.web.model.CommentDto;
-import com.panagiotisbrts.dashboardservice.web.model.CommentResponse;
+import com.panagiotisbrts.clients.commentservice.CommentResponse;
+import com.panagiotisbrts.dashboardservice.web.model.CommentRequest;
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ import java.util.List;
  */
 public interface DashboardService {
 
-    public List<CommentResponse>  getComments();
+   List<CommentResponse>  getComments();
 
+   void addComment(CommentRequest commentRequest);
 }

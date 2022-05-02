@@ -12,11 +12,11 @@ import java.util.List;
  * @author Panagiotis_Baroutas
  */
 
-@FeignClient(value="comment-service")
+@FeignClient("comment-service")
 public interface CommentClient {
 
-    @GetMapping(path= "api/v1/comments")
-    ResponseEntity<List<CommentResponse>> getComments() ;
+    @GetMapping(path = "api/v1/comment/getComments")
+    ResponseEntity<List<CommentResponse>> getComments();
 
 
 }

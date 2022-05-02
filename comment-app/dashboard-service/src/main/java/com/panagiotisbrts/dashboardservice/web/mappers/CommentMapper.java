@@ -1,8 +1,8 @@
 package com.panagiotisbrts.dashboardservice.web.mappers;
 
+import com.panagiotisbrts.clients.commentservice.CommentResponse;
 import com.panagiotisbrts.dashboardservice.web.model.CommentDto;
 import com.panagiotisbrts.dashboardservice.web.model.CommentRequest;
-import com.panagiotisbrts.dashboardservice.web.model.CommentResponse;
 import org.springframework.stereotype.Component;
 
 /**

@@ -1,6 +1,6 @@
 package com.panagiotisbrts.commentservice.web.controller;
 
-import com.panagiotisbrts.commentservice.domain.Comment;
+
 import com.panagiotisbrts.commentservice.services.CommentService;
 import com.panagiotisbrts.commentservice.web.mappers.CommentMapper;
 import com.panagiotisbrts.commentservice.web.model.CommentDto;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequestMapping("api/v1/comments")
+@RequestMapping("/api/v1/comment/")
 public class CommentController {
 
 
@@ -35,14 +35,14 @@ public class CommentController {
         this.commentMapper = commentMapper;
     }
 
-    @PostMapping
+    @PostMapping(path ="addComment")
     public void addComment(@RequestBody CommentRequest commentRequest) {
         log.info("new add comment request");
         commentService.addComment(commentRequest);
 
     }
 
-    @GetMapping
+    @GetMapping(path ="getComments")
     public ResponseEntity<List<CommentResponse>> getComments() {
         log.info("new get comments request");
 
