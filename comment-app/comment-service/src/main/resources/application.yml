@@ -29,6 +29,8 @@ rabbitmq:
   exchanges:
     internal: internal.exchange
   queues:
-    notification: comment.queue
+    comment: comment.queue
+    dashboard: dashboard.queue
   routing-keys:
-    internal-notification: internal.comment.routing-key
+    internal-comment: internal.comment.routing-key
+    internal-dashboard: internal.dashboard.routing-key

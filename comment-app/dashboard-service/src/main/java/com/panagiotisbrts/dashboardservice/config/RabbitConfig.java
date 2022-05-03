@@ -1,4 +1,4 @@
-package com.panagiotisbrts.commentservice.config;
+package com.panagiotisbrts.dashboardservice.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -11,16 +11,17 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author Panagiotis_Baroutas
  */
+
 @Configuration
-public class CommentServiceConfig {
+public class RabbitConfig {
 
     @Value("${rabbitmq.exchanges.internal}")
     private String internalExchange;
 
-    @Value("${rabbitmq.queues.comment}")
+    @Value("${rabbitmq.queues.dashboard}")
     private String commentQueue;
 
-    @Value("${rabbitmq.routing-keys.internal-comment}")
+    @Value("${rabbitmq.routing-keys.internal-dashboard}")
     private String internalCommentRoutingKey;
 
     @Bean
@@ -45,23 +46,11 @@ public class CommentServiceConfig {
         return internalExchange;
     }
 
-    public void setInternalExchange(String internalExchange) {
-        this.internalExchange = internalExchange;
-    }
-
     public String getCommentQueue() {
         return commentQueue;
     }
 
-    public void setCommentQueue(String commentQueue) {
-        this.commentQueue = commentQueue;
-    }
-
     public String getInternalCommentRoutingKey() {
         return internalCommentRoutingKey;
-    }
-
-    public void setInternalCommentRoutingKey(String internalCommentRoutingKey) {
-        this.internalCommentRoutingKey = internalCommentRoutingKey;
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  */
 @SpringBootApplication(
         scanBasePackages = {
-                "com.panagiotisbrts.commentservice.config",
+                "com.panagiotisbrts.commentservice",
                 "com.panagiotisbrts.amqp",
         })
 @EnableEurekaClient

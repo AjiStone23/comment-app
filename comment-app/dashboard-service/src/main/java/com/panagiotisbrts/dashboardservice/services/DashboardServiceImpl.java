@@ -5,6 +5,7 @@ import com.panagiotisbrts.clients.commentservice.CommentClient;
 import com.panagiotisbrts.clients.commentservice.CommentResponse;
 import com.panagiotisbrts.dashboardservice.web.model.CommentRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,6 +21,11 @@ public class DashboardServiceImpl implements DashboardService {
 
     private final CommentClient commentClient;
     private final RabbitMQMessageProducer rabbitMQMessageProducer;
+
+    @Value("${rabbitmq.exchanges.internal}")
+    private String internalExchange;
+    @Value("${rabbitmq.routing-keys.internal-comment}")
+    private String internalCommentRoutingKey;
 
     public DashboardServiceImpl(RestTemplate restTemplate, CommentClient commentClient, RabbitMQMessageProducer rabbitMQMessageProducer) {
         this.commentClient = commentClient;
@@ -37,7 +43,7 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public void addComment(CommentRequest commentRequest) {
 
-        rabbitMQMessageProducer.publish(commentRequest, "internal.exchange", "internal.comment.routing-key");
+        rabbitMQMessageProducer.publish(commentRequest, internalExchange, internalCommentRoutingKey);
 
     }
 }

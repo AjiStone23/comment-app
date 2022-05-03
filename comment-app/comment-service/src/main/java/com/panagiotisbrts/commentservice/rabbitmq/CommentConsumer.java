@@ -19,7 +19,7 @@ public class CommentConsumer {
         this.commentService = commentService;
     }
 
-@RabbitListener(queues="${rabbitmq.queues.notification}")
+@RabbitListener(queues="${rabbitmq.queues.comment}")
     public void consumer(CommentRequest request) {
         log.info("Consumed : {} from Queue :",
                 request);
