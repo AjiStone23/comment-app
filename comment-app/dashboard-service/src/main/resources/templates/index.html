@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Comments</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style>
         table.scrolldown {
             width: 50%;
@@ -14,7 +15,8 @@
         }
 
         /* To display the block as level element */
-        table.scrolldown tbody, table.scrolldown thead {
+        table.scrolldown tbody,
+        table.scrolldown thead {
             display: block;
         }
 
@@ -39,77 +41,73 @@
             border-top: 2px solid black;
         }
 
-        tbody td, thead th {
-            width : 200px;
+        tbody td,
+        thead th {
+            width: 200px;
             border-right: 2px solid black;
         }
+
         td {
-            text-align:center;
+            text-align: center;
         }
-
-
     </style>
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
     <script>
-// When DOM is loaded this
-    // function will get executed
-    $(() => {
+        // When DOM is loaded this
         // function will get executed
-        // on click of submit button
-        $("#submitButton").click(function(ev) {
+        $(() => {
+            // function will get executed
+            // on click of submit button
+            $("#submitButton").click(function (ev) {
 
-        ev.preventDefault();
-            var form = $("#formId");
-            var url = form.attr('action');
-            $.ajax({
-                method: "POST",
-                url: url,
-                data: form.serialize(),
-                success: function(data) {
-                    // Ajax call completed successfully
-                    alert("Form Submited Successfully");
-                  document.getElementById("formId").reset();
-                },
-                error: function(data) {
+                ev.preventDefault();
+                var form = $("#formId");
+                var url = form.attr('action');
+                $.ajax({
+                    method: "POST",
+                    url: url,
+                    data: form.serialize(),
+                    success: function (data) {
+                        // Ajax call completed successfully
+                        alert("Form Submited Successfully");
+                        document.getElementById("formId").reset();
+                    },
+                    error: function (data) {
 
-                    // Some error in ajax call
-                    alert("some Error");
-                }
+                        // Some error in ajax call
+                        alert("some Error");
+                    }
+                });
             });
+
+            var interval = 7000;
+            function doAjax() {
+                console.log("ajax call");
+                $.ajax({
+                    type: 'GET',
+                    url: 'http://localhost:8081/api/v1/dashboard/getLatestComments',
+                    success: function (data) {
+                        var trHTML = '';
+                        data.forEach(function (obj) {
+                            console.log(obj.commentText);
+                            trHTML += '<tr><td>' + obj.commentText + '</td><td>' + obj.createdDate + '</td></tr>';
+
+                        })
+                        $('#commentsTable').append(trHTML);
+                    },
+                    complete: function (data) {
+                        setTimeout(doAjax, interval);
+                    },
+                    error: function (data) {
+                        console.log(error);
+                        // Some error in ajax call
+                        alert("some Error");
+                    }
+                });
+            }
+            setTimeout(doAjax, interval);
+
         });
-
-
-         var interval =10000;
-         function doAjax() {
-           console.log("ajax call");
-         $.ajax({
-                 type: 'GET',
-                 url: 'http://localhost:8081/api/v1/dashboard/getLatestComments',
-                 success: function (data) {
-                 console.log("*************************");
-                   console.log(data);
-               //  returnedData = JSON.parse(data);
-                 data.forEach(function(obj) {
-
-                console.log(obj.commentText);
-                    $('#commentsTable tbody').append('<tr>'+obj.commentText+'</tr><tr>'+obj.createdDate+'</tr>');// first set the value
-                      $('#test tbody').append('<tr>'+obj.commentText+'</tr><tr>'+obj.createdDate+'</tr>');// first set the value
-                 })
-                },
-                 complete: function (data) {
-                         // Schedule the next
-                         setTimeout(doAjax, interval);
-                 },
-                       error: function(data) {
-                                console.log(error);
-                                     // Some error in ajax call
-                                     alert("some Error");
-                                 }
-         });
-     }
-     setTimeout(doAjax, interval);
-
-    });
 
     </script>
 </head>
@@ -128,46 +126,26 @@
     <tbody>
     <tr th:each="comment : ${comments}">
         <td>
-            <a th:text="${comment.commentText}"/></a>
+            <a th:text="${comment.commentText}" /></a>
         </td>
-        <td th:text="${comment.createdDate}"/>
+        <td th:text="${comment.createdDate}" />
     </tr>
     </tbody>
 </table>
 
-<table class="table table-hover " id="test">
-    <thead>
-    <tr>
-        <th>Field Name</th>
-        <th>Values</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>Mark</td>  //Please ignore these two records. At beginning the table will be empty
-        <td>Otto</td>
-    </tr>
-    <tr>
-        <td>Jacob</td>
-        <td>Thornton</td>
-    </tr>
-    </tbody>
-</table>
+
 <h2>Form</h2>
 <form id='formId' action='http://localhost:8081/api/v1/dashboard/addComment'>
 
     <br> Add Comment:
-    <input type='text'
-           id='commentText'
-           name='commentText'>
+    <input type='text' id='commentText' name='commentText'>
     <br>
-    <button type='submit'
-            id='submitButton'>
+    <button type='submit' id='submitButton'>
         Submit
     </button>
 </form>
 
 
-
 </body>
+
 </html>

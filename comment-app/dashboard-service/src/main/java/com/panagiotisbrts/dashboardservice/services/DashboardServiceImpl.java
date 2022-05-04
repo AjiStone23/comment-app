@@ -59,7 +59,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         List<CommentDto> returnList = CommentConsumer.getNewCommentsList().stream()
                 .map(commentMapper::commentRequestToCommentDto).collect(Collectors.toList());
-        //CommentConsumer.resetList();
+        CommentConsumer.resetList();
         return returnList;
     }
 
