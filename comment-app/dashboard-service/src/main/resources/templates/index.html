@@ -18,6 +18,8 @@ overflow: auto;
         // function will get executed
         $(() => {
 
+            const UUIDarr = [];
+
                 $.ajax({
                     method: "GET",
                   url: 'http://localhost:8081/api/v1/dashboard/getComments',
@@ -25,7 +27,8 @@ overflow: auto;
                         // Ajax call completed successfully
                                var trHTML = '';
                         data.forEach(function (obj) {
-                            console.log(obj.commentText);
+                            console.log(obj);
+                            UUIDarr.push(obj.commentUUID);
                             trHTML += '<tr><td>' + obj.commentText + '</td><td>' + obj.createdDate + '</td></tr>';
 
                         })
@@ -73,7 +76,12 @@ overflow: auto;
                         var trHTML = '';
                         data.forEach(function (obj) {
                             console.log(obj.commentText);
-                            trHTML += '<tr><td>' + obj.commentText + '</td><td>' + obj.createdDate + '</td></tr>';
+
+                            if(!UUIDarr.includes(obj.commentUUID)){
+                                trHTML += '<tr><td>' + obj.commentText + '</td><td>' + obj.createdDate + '</td></tr>';
+                                UUIDarr.push(obj.commentUUID);
+                            }
+
 
                         })
                         $('#commentsTable').append(trHTML);
@@ -110,8 +118,6 @@ overflow: auto;
     </table>
 </div>
 
-
-<h2>Form</h2>
 <form id='formId' action='http://localhost:8081/api/v1/dashboard/addComment'>
 
     <br> Add Comment:
