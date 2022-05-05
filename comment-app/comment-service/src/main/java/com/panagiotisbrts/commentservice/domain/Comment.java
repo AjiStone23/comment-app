@@ -28,6 +28,7 @@ public class Comment {
             generator = "comment_id_sequence"
     )
     private Long id;
+    private String commentUUID;
     private String commentText;
 
     @Column(name = "createdDate", columnDefinition = "timestamp with time zone not null")

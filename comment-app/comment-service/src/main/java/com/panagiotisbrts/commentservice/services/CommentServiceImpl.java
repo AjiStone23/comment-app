@@ -1,18 +1,18 @@
 package com.panagiotisbrts.commentservice.services;
 
 import com.panagiotisbrts.amqp.RabbitMQMessageProducer;
+import com.panagiotisbrts.clients.commentservice.model.CommentDto;
+import com.panagiotisbrts.clients.commentservice.model.CommentRequest;
 import com.panagiotisbrts.commentservice.domain.Comment;
 import com.panagiotisbrts.commentservice.repositories.CommentRepository;
 import com.panagiotisbrts.commentservice.web.mappers.CommentMapper;
-import com.panagiotisbrts.commentservice.web.model.CommentDto;
-import com.panagiotisbrts.commentservice.web.model.CommentRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Panagiotis_Baroutas
@@ -40,10 +40,14 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = Comment.builder()
                 .commentText(commentRequest.getCommentText())
                 .createdDate(OffsetDateTime.now())
+                .commentUUID(UUID.randomUUID().toString())
                 .build();
 
         commentRepository.save(comment);
-        rabbitMQMessageProducer.publish(commentRequest, internalExchange, internalCommentRoutingKey);
+
+        CommentDto commentDto = commentMapper.commentToCommentDto(comment);
+
+        rabbitMQMessageProducer.publish(commentDto, internalExchange, internalCommentRoutingKey);
     }
 
     @Override

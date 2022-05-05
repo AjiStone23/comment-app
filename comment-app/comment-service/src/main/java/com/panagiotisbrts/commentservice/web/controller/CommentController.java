@@ -1,16 +1,18 @@
 package com.panagiotisbrts.commentservice.web.controller;
 
 
+import com.panagiotisbrts.clients.commentservice.model.CommentDto;
+import com.panagiotisbrts.clients.commentservice.model.CommentRequest;
+import com.panagiotisbrts.clients.commentservice.model.CommentResponse;
 import com.panagiotisbrts.commentservice.services.CommentService;
 import com.panagiotisbrts.commentservice.web.mappers.CommentMapper;
-import com.panagiotisbrts.commentservice.web.model.CommentDto;
-import com.panagiotisbrts.commentservice.web.model.CommentRequest;
-import com.panagiotisbrts.commentservice.web.model.CommentResponse;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -2,18 +2,18 @@ package com.panagiotisbrts.dashboardservice.services;
 
 import com.panagiotisbrts.amqp.RabbitMQMessageProducer;
 import com.panagiotisbrts.clients.commentservice.CommentClient;
-import com.panagiotisbrts.clients.commentservice.CommentResponse;
+import com.panagiotisbrts.clients.commentservice.model.CommentDto;
+import com.panagiotisbrts.clients.commentservice.model.CommentRequest;
+import com.panagiotisbrts.clients.commentservice.model.CommentResponse;
 import com.panagiotisbrts.dashboardservice.rabbitmq.CommentConsumer;
 import com.panagiotisbrts.dashboardservice.web.mappers.CommentMapper;
-import com.panagiotisbrts.dashboardservice.web.model.CommentDto;
-import com.panagiotisbrts.dashboardservice.web.model.CommentRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 /**
  * @author Panagiotis_Baroutas
@@ -56,11 +56,7 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public List<CommentDto> getLatestComments() {
 
-
-        List<CommentDto> returnList = CommentConsumer.getNewCommentsList().stream()
-                .map(commentMapper::commentRequestToCommentDto).collect(Collectors.toList());
-        CommentConsumer.resetList();
-        return returnList;
+       return CommentConsumer.getNewCommentsList() ;
     }
 
 

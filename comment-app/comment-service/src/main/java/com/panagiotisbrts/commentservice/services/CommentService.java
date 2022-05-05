@@ -1,8 +1,7 @@
 package com.panagiotisbrts.commentservice.services;
 
-import com.panagiotisbrts.commentservice.domain.Comment;
-import com.panagiotisbrts.commentservice.web.model.CommentDto;
-import com.panagiotisbrts.commentservice.web.model.CommentRequest;
+import com.panagiotisbrts.clients.commentservice.model.CommentDto;
+import com.panagiotisbrts.clients.commentservice.model.CommentRequest;
 
 import java.util.List;
 

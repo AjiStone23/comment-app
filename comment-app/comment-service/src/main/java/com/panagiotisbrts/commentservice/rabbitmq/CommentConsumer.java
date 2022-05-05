@@ -1,7 +1,7 @@
 package com.panagiotisbrts.commentservice.rabbitmq;
 
+import com.panagiotisbrts.clients.commentservice.model.CommentRequest;
 import com.panagiotisbrts.commentservice.services.CommentService;
-import com.panagiotisbrts.commentservice.web.model.CommentRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;

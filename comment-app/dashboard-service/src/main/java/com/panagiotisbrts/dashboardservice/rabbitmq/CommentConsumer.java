@@ -1,6 +1,6 @@
 package com.panagiotisbrts.dashboardservice.rabbitmq;
 
-import com.panagiotisbrts.dashboardservice.web.model.CommentRequest;
+import com.panagiotisbrts.clients.commentservice.model.CommentDto;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -16,13 +16,13 @@ import java.util.List;
 public class CommentConsumer {
 
     @Getter
-    private static List<CommentRequest> newCommentsList = new ArrayList<>();
+    private static List<CommentDto> newCommentsList = new ArrayList<>();
 
     @RabbitListener(queues = "${rabbitmq.queues.dashboard}")
-    public void consumer(CommentRequest request) {
-        newCommentsList.add(request);
+    public void consumer(CommentDto commentDto) {
+        newCommentsList.add(commentDto);
         log.info("Consumed : {} from Queue :",
-                request);
+                commentDto);
 
     }
 

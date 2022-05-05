@@ -1,8 +1,8 @@
 package com.panagiotisbrts.dashboardservice.web.mappers;
 
-import com.panagiotisbrts.clients.commentservice.CommentResponse;
-import com.panagiotisbrts.dashboardservice.web.model.CommentDto;
-import com.panagiotisbrts.dashboardservice.web.model.CommentRequest;
+import com.panagiotisbrts.clients.commentservice.model.CommentDto;
+import com.panagiotisbrts.clients.commentservice.model.CommentRequest;
+import com.panagiotisbrts.clients.commentservice.model.CommentResponse;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class CommentMapper {
-
 
 
     public CommentDto commentRequestToCommentDto(CommentRequest commentRequest) {
@@ -23,7 +22,7 @@ public class CommentMapper {
         return CommentResponse.builder()
                 .commentText(commentDto.getCommentText())
                 .createdDate(commentDto.getCreatedDate())
-                .id(commentDto.getId())
+                .commentUUID(commentDto.getCommentUUID())
                 .build();
     }
 

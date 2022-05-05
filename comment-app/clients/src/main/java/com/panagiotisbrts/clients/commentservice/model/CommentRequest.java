@@ -1,4 +1,4 @@
-package com.panagiotisbrts.commentservice.web.model;
+package com.panagiotisbrts.clients.commentservice.model;
 
 
 import lombok.*;

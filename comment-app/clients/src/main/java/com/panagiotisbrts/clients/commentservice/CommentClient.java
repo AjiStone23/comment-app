@@ -1,5 +1,6 @@
 package com.panagiotisbrts.clients.commentservice;
 
+import com.panagiotisbrts.clients.commentservice.model.CommentResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 
 import org.springframework.http.ResponseEntity;

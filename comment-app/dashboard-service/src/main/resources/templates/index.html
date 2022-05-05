@@ -1,61 +1,44 @@
 <!DOCTYPE html>
 
-<html xmlns:th="http://www.thymeleaf.org">
+<html >
 
 <head>
+    <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css integrity=undefined crossorigin=anonymous>
     <title>Comments</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style>
-        table.scrolldown {
-            width: 50%;
-
-            /* border-collapse: collapse; */
-            border-spacing: 0;
-            border: 2px solid black;
-        }
-
-        /* To display the block as level element */
-        table.scrolldown tbody,
-        table.scrolldown thead {
-            display: block;
-        }
-
-        thead tr th {
-            height: 40px;
-            line-height: 40px;
-        }
-
-        table.scrolldown tbody {
-
-            /* Set the height of table body */
-            height: 200px;
-
-            /* Set vertical scroll */
-            overflow-y: auto;
-
-            /* Hide the horizontal scroll */
-            overflow-x: hidden;
-        }
-
-        tbody {
-            border-top: 2px solid black;
-        }
-
-        tbody td,
-        thead th {
-            width: 200px;
-            border-right: 2px solid black;
-        }
-
-        td {
-            text-align: center;
-        }
+        .tbodyDiv{
+max-height: clamp(25em,10vh,150px);
+overflow: auto;
+}
     </style>
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
     <script>
         // When DOM is loaded this
         // function will get executed
         $(() => {
+
+                $.ajax({
+                    method: "GET",
+                  url: 'http://localhost:8081/api/v1/dashboard/getComments',
+                    success: function (data) {
+                        // Ajax call completed successfully
+                               var trHTML = '';
+                        data.forEach(function (obj) {
+                            console.log(obj.commentText);
+                            trHTML += '<tr><td>' + obj.commentText + '</td><td>' + obj.createdDate + '</td></tr>';
+
+                        })
+                        $('#commentsTable').append(trHTML);
+
+                    },
+                    error: function (data) {
+
+                        // Some error in ajax call
+                        alert("some Error");
+                    }
+                });
+
             // function will get executed
             // on click of submit button
             $("#submitButton").click(function (ev) {
@@ -116,22 +99,16 @@
 
 <h1>Comments</h1>
 
-<table id="commentsTable" class="scrolldown">
-    <thead>
-    <tr>
-        <th style="width: 150px;">Comment</th>
-        <th style="width: 200px;">Date</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="comment : ${comments}">
-        <td>
-            <a th:text="${comment.commentText}" /></a>
-        </td>
-        <td th:text="${comment.createdDate}" />
-    </tr>
-    </tbody>
-</table>
+<div class="tbodyDiv">
+    <table class="table table-bordered table-striped text-center" id="commentsTable">
+        <thead class="sticky-top bg-white">
+        <tr><th>Comment</th><th>Date</th></tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</div>
 
 
 <h2>Form</h2>

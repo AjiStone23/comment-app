@@ -1,17 +1,15 @@
 package com.panagiotisbrts.dashboardservice.web.controller;
 
-import com.panagiotisbrts.clients.commentservice.CommentResponse;
+import com.panagiotisbrts.clients.commentservice.model.CommentDto;
+import com.panagiotisbrts.clients.commentservice.model.CommentRequest;
+import com.panagiotisbrts.clients.commentservice.model.CommentResponse;
 import com.panagiotisbrts.dashboardservice.services.DashboardService;
 import com.panagiotisbrts.dashboardservice.web.mappers.CommentMapper;
-import com.panagiotisbrts.dashboardservice.web.model.CommentDto;
-import com.panagiotisbrts.dashboardservice.web.model.CommentRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,14 +30,9 @@ public class DashboardController {
         this.dashboardService = dashboardService;
     }
 
-    @ModelAttribute
-    CommentRequest setupForm () {
-        return new CommentRequest();
-    }
-
 
     @PostMapping(path ="addComment")
-    public ResponseEntity addComment(@ModelAttribute CommentRequest commentRequest) {
+    public ResponseEntity addComment(CommentRequest commentRequest) {
         log.info("new get comments request Dash");
 
         dashboardService.addComment(commentRequest);
@@ -47,13 +40,21 @@ public class DashboardController {
     }
 
 
+    @GetMapping(path ="getIndex")
+    public String getIndex() {
+        log.info("new get index request");
+        return "index";
+    }
+
+
+
     @GetMapping(path ="getComments")
-    public String getComments(Model model) {
+    @ResponseBody
+    public  ResponseEntity<List<CommentResponse>> getComments() {
         log.info("new get comments request");
 
         List<CommentResponse> commentResponseList = dashboardService.getComments();
-        model.addAttribute("comments", commentResponseList);
-        return "index";
+        return new ResponseEntity<>(commentResponseList, HttpStatus.OK);
     }
 
 
