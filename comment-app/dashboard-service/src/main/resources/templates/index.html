@@ -22,7 +22,7 @@ overflow: auto;
 
                 $.ajax({
                     method: "GET",
-                  url: 'http://localhost:8081/api/v1/dashboard/getComments',
+                  url: 'http://localhost:8083/api/v1/dashboard/getComments',
                     success: function (data) {
                         // Ajax call completed successfully
                                var trHTML = '';
@@ -71,7 +71,7 @@ overflow: auto;
                 console.log("ajax call");
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:8081/api/v1/dashboard/getLatestComments',
+                    url: 'http://localhost:8083/api/v1/dashboard/getLatestComments',
                     success: function (data) {
                         var trHTML = '';
                         data.forEach(function (obj) {
@@ -118,7 +118,7 @@ overflow: auto;
     </table>
 </div>
 
-<form id='formId' action='http://localhost:8081/api/v1/dashboard/addComment'>
+<form id='formId' action='http://localhost:8083/api/v1/dashboard/addComment'>
 
     <br> Add Comment:
     <input type='text' id='commentText' name='commentText'>

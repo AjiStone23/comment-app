@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  * @author Panagiotis_Baroutas
  */
 @Configuration
-public class CommentServiceConfig {
+public class RabbitConfig {
 
     @Value("${rabbitmq.exchanges.internal}")
     private String internalExchange;
@@ -53,15 +53,4 @@ public class CommentServiceConfig {
         return commentQueue;
     }
 
-    public void setCommentQueue(String commentQueue) {
-        this.commentQueue = commentQueue;
-    }
-
-    public String getInternalCommentRoutingKey() {
-        return internalCommentRoutingKey;
-    }
-
-    public void setInternalCommentRoutingKey(String internalCommentRoutingKey) {
-        this.internalCommentRoutingKey = internalCommentRoutingKey;
-    }
 }

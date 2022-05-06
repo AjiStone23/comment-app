@@ -9,11 +9,11 @@ spring:
     username: user
   jpa:
     hibernate:
-        ddl-auto: create-drop
+      ddl-auto: create-drop
     properties:
-        hibernate:
-          dialect: org.hibernate.dialect.PostgreSQLDialect
-          format_sql: true
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
     show-sql: true
   rabbitmq:
     addresses: localhost:5672
@@ -28,6 +28,7 @@ eureka:
 rabbitmq:
   exchanges:
     internal: internal.exchange
+    fanout: fanout.exchange
   queues:
     comment: comment.queue
     dashboard: dashboard.queue

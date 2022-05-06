@@ -1,9 +1,6 @@
 package com.panagiotisbrts.dashboardservice.config;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,42 +12,37 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
-    @Value("${rabbitmq.exchanges.internal}")
-    private String internalExchange;
+    @Value("${rabbitmq.exchanges.fanout}")
+    private String fanoutExchange;
 
     @Value("${rabbitmq.queues.dashboard}")
-    private String commentQueue;
+    private String dashboardQueue;
 
-    @Value("${rabbitmq.routing-keys.internal-dashboard}")
-    private String internalCommentRoutingKey;
 
     @Bean
-    public TopicExchange internalTopicExchange(){
-        return new TopicExchange(this.internalExchange);
+    public FanoutExchange fanout() {
+        return new FanoutExchange(this.fanoutExchange);
     }
 
     @Bean
-    public Queue notificationQueue(){
-        return new Queue(this.commentQueue);
+    public Queue dashboardQueue(){
+        return new Queue(this.dashboardQueue);
     }
 
     @Bean
     public Binding internalToNotificationBinding() {
         return BindingBuilder
-                .bind(notificationQueue())
-                .to(internalTopicExchange())
-                .with(this.internalCommentRoutingKey);
+                .bind(dashboardQueue())
+                .to(fanout());
+
     }
 
-    public String getInternalExchange() {
-        return internalExchange;
+    public String getFanoutExchange() {
+        return fanoutExchange;
     }
 
-    public String getCommentQueue() {
-        return commentQueue;
+    public String getDashboardQueue() {
+        return dashboardQueue;
     }
 
-    public String getInternalCommentRoutingKey() {
-        return internalCommentRoutingKey;
-    }
 }

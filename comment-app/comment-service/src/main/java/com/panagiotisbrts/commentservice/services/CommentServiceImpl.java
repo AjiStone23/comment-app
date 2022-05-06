@@ -24,10 +24,8 @@ public class CommentServiceImpl implements CommentService {
     private final CommentMapper commentMapper;
     private final RabbitMQMessageProducer rabbitMQMessageProducer;
 
-    @Value("${rabbitmq.exchanges.internal}")
-    private String internalExchange;
-    @Value("${rabbitmq.routing-keys.internal-dashboard}")
-    private String internalCommentRoutingKey;
+    @Value("${rabbitmq.exchanges.fanout}")
+    private String fanoutExchange;
 
     public CommentServiceImpl(CommentRepository commentRepository, CommentMapper commentMapper, RabbitMQMessageProducer rabbitMQMessageProducer) {
         this.commentRepository = commentRepository;
@@ -43,11 +41,11 @@ public class CommentServiceImpl implements CommentService {
                 .commentUUID(UUID.randomUUID().toString())
                 .build();
 
-        commentRepository.save(comment);
+        commentRepository.saveAndFlush(comment);
 
         CommentDto commentDto = commentMapper.commentToCommentDto(comment);
 
-        rabbitMQMessageProducer.publish(commentDto, internalExchange, internalCommentRoutingKey);
+        rabbitMQMessageProducer.publish(commentDto, fanoutExchange, "");
     }
 
     @Override
@@ -57,7 +55,7 @@ public class CommentServiceImpl implements CommentService {
 
         List<Comment> commentsList = commentRepository.findAll();
 
-        commentsList.forEach(comment ->  commentDtoList.add(commentMapper.commentToCommentDto(comment)));
+        commentsList.forEach(comment -> commentDtoList.add(commentMapper.commentToCommentDto(comment)));
 
         return commentDtoList;
     }
