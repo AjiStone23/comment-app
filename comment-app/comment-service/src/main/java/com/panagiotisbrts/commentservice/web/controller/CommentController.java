@@ -5,8 +5,8 @@ import com.panagiotisbrts.clients.commentservice.model.CommentDto;
 import com.panagiotisbrts.clients.commentservice.model.CommentRequest;
 import com.panagiotisbrts.clients.commentservice.model.CommentResponse;
 import com.panagiotisbrts.commentservice.services.CommentService;
-import com.panagiotisbrts.commentservice.web.mappers.CommentMapper;
 
+import com.panagiotisbrts.commentservice.web.mappers.CommentMapper;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpStatus;

@@ -5,7 +5,7 @@ spring:
     name: comment-service
   datasource:
     password: password
-    url: jdbc:postgresql://localhost:5432/comment
+    url: jdbc:postgresql://localhost:5432/postgres
     username: user
   jpa:
     hibernate:
