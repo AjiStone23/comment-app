@@ -52,7 +52,7 @@ Inside "comment-app" folder run in seperate tabs for each microservice
 >java -jar dashboard-service/target/dashboard-service-1.0-SNAPSHOT.jar
 
 - **COMMENT - SERVICE 2**
-> -Dserver.port=8085 -jar comment-service/target/comment-service-1.0-SNAPSHOT.jar
+>java -jar -Dserver.port=8085 -jar comment-service/target/comment-service-1.0-SNAPSHOT.jar
 
 - **DASHBOARD - SERVICE 2s**
 >java -jar -Dserver.port=8086 -Drabbitmq.queues.dashboard=comment.queue2  dashboard-service/target/dashboard-service-1.0-SNAPSHOT.jar
