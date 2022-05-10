@@ -1,18 +1,23 @@
 package com.panagiotisbrts.dashboardservice.services;
 
 import com.panagiotisbrts.amqp.RabbitMQMessageProducer;
+import com.panagiotisbrts.amqp.model.RabbitMessage;
 import com.panagiotisbrts.clients.commentservice.CommentClient;
 import com.panagiotisbrts.clients.commentservice.model.CommentDto;
 import com.panagiotisbrts.clients.commentservice.model.CommentRequest;
-import com.panagiotisbrts.clients.commentservice.model.CommentResponse;
 import com.panagiotisbrts.dashboardservice.rabbitmq.CommentConsumer;
 import com.panagiotisbrts.dashboardservice.web.mappers.CommentMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.util.Arrays;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 
 /**
@@ -38,25 +43,26 @@ public class DashboardServiceImpl implements DashboardService {
         this.commentMapper = commentMapper;
     }
 
-    @Override
-    public List<CommentResponse> getComments() {
-
-        List<CommentResponse> commentList = commentClient.getComments().getBody();
-        return commentList;
-    }
-
 
     @Override
     public void addComment(CommentRequest commentRequest) {
 
-        rabbitMQMessageProducer.publish(commentRequest, internalExchange, internalCommentRoutingKey);
+        RabbitMessage<CommentRequest> message=  new RabbitMessage<>(RabbitMessage.Status.REQUESTED,commentRequest);
+
+        rabbitMQMessageProducer.publish(message, internalExchange, internalCommentRoutingKey);
 
     }
 
     @Override
-    public List<CommentDto> getLatestComments() {
+    public List<CommentDto> getLatestComments(List<String> commentUUIds) {
 
-       return CommentConsumer.getNewCommentsList() ;
+        Set<String> commentUUIdsSet = new HashSet<>(commentUUIds);
+
+        ConcurrentHashMap<String, CommentDto> map = CommentConsumer.getNewCommentsMap();
+
+        return map.keySet().stream().filter(key -> !commentUUIdsSet.contains(key))
+                .map(map::get).collect(Collectors.toList());
+
     }
 
 

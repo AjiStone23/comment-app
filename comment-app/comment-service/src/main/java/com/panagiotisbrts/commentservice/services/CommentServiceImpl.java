@@ -1,6 +1,7 @@
 package com.panagiotisbrts.commentservice.services;
 
 import com.panagiotisbrts.amqp.RabbitMQMessageProducer;
+import com.panagiotisbrts.amqp.model.RabbitMessage;
 import com.panagiotisbrts.clients.commentservice.model.CommentDto;
 import com.panagiotisbrts.clients.commentservice.model.CommentRequest;
 import com.panagiotisbrts.commentservice.domain.Comment;
@@ -45,8 +46,9 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.saveAndFlush(comment);
 
         CommentDto commentDto = commentMapper.commentToCommentDto(comment);
+        RabbitMessage<CommentDto> message = new RabbitMessage<>(RabbitMessage.Status.CREATED, commentDto);
 
-        rabbitMQMessageProducer.publish(commentDto, fanoutExchange, "");
+        rabbitMQMessageProducer.publish(message, fanoutExchange, "");
     }
 
     @Override

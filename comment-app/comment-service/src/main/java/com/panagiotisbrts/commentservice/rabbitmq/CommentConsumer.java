@@ -1,5 +1,6 @@
 package com.panagiotisbrts.commentservice.rabbitmq;
 
+import com.panagiotisbrts.amqp.model.RabbitMessage;
 import com.panagiotisbrts.clients.commentservice.model.CommentRequest;
 import com.panagiotisbrts.commentservice.config.RabbitConfig;
 import com.panagiotisbrts.commentservice.services.CommentService;
@@ -24,9 +25,9 @@ public class CommentConsumer {
     }
 
 @RabbitListener(queues="${rabbitmq.queues.comment}")
-    public void consumer(CommentRequest request) {
+    public void consumer( RabbitMessage<CommentRequest> message) {
         log.info("Consumed : {} from Queue : {}",
-                request,rabbitConfig.getCommentQueue());
-        commentService.addComment(request);
+                message,rabbitConfig.getCommentQueue());
+        commentService.addComment(message.getBody());
     }
 }

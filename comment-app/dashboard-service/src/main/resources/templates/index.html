@@ -1,134 +1,137 @@
 <!DOCTYPE html>
 
-<html >
-
+<html>
 <head>
-    <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css integrity=undefined crossorigin=anonymous>
+    <link rel=stylesheet
+          href=https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css
+          integrity=undefined crossorigin=anonymous>
     <title>Comments</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <style>
-        .tbodyDiv{
-max-height: clamp(25em,10vh,150px);
-overflow: auto;
-}
+      .tbodyDiv {
+        max-height: clamp(25em, 10vh, 150px);
+        overflow: auto;
+      }
+
     </style>
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
     <script>
-        // When DOM is loaded this
-        // function will get executed
-        $(() => {
+      // When DOM is loaded this
+      // function will get executed
+      $(() => {
+        const UUIDarr = [];
 
-            const UUIDarr = [];
-
-                $.ajax({
-                    method: "GET",
-                  url: 'http://localhost:8083/api/v1/dashboard/getComments',
-                    success: function (data) {
-                        // Ajax call completed successfully
-                               var trHTML = '';
-                        data.forEach(function (obj) {
-                            console.log(obj);
-                            UUIDarr.push(obj.commentUUID);
-                            trHTML += '<tr><td>' + obj.commentText + '</td><td>' + obj.createdDate + '</td></tr>';
-
-                        })
-                        $('#commentsTable').append(trHTML);
-
-                    },
-                    error: function (data) {
-
-                        // Some error in ajax call
-                        alert("some Error");
-                    }
-                });
-
-            // function will get executed
-            // on click of submit button
-            $("#submitButton").click(function (ev) {
-
-                ev.preventDefault();
-                var form = $("#formId");
-                var url = form.attr('action');
-                $.ajax({
-                    method: "POST",
-                    url: url,
-                    data: form.serialize(),
-                    success: function (data) {
-                        // Ajax call completed successfully
-                        alert("Form Submited Successfully");
-                        document.getElementById("formId").reset();
-                    },
-                    error: function (data) {
-
-                        // Some error in ajax call
-                        alert("some Error");
-                    }
-                });
+        $.ajax({
+          method: "GET",
+          url: "http://localhost:8083/api/v1/comment/getComments",
+          success: function (data) {
+            // Ajax call completed successfully
+            var trHTML = "";
+            data.forEach(function (obj) {
+              console.log(obj);
+              UUIDarr.push(obj.commentUUID);
+              trHTML +=
+                "<tr><td>" +
+                obj.commentText +
+                "</td><td>" +
+                obj.createdDate +
+                "</td></tr>";
             });
-
-            var interval = 7000;
-            function doAjax() {
-                console.log("ajax call");
-                $.ajax({
-                    type: 'GET',
-                    url: 'http://localhost:8083/api/v1/dashboard/getLatestComments',
-                    success: function (data) {
-                        var trHTML = '';
-                        data.forEach(function (obj) {
-                            console.log(obj.commentText);
-
-                            if(!UUIDarr.includes(obj.commentUUID)){
-                                trHTML += '<tr><td>' + obj.commentText + '</td><td>' + obj.createdDate + '</td></tr>';
-                                UUIDarr.push(obj.commentUUID);
-                            }
-
-
-                        })
-                        $('#commentsTable').append(trHTML);
-                    },
-                    complete: function (data) {
-                        setTimeout(doAjax, interval);
-                    },
-                    error: function (data) {
-                        console.log(error);
-                        // Some error in ajax call
-                        alert("some Error");
-                    }
-                });
-            }
-            setTimeout(doAjax, interval);
-
+            $("#commentsTable").append(trHTML);
+          },
+          error: function (data) {
+            // Some error in ajax call
+            alert("some Error");
+          },
         });
+
+        // function will get executed
+        // on click of submit button
+        $("#submitButton").click(function (ev) {
+          ev.preventDefault();
+          var form = $("#formId");
+          var url = form.attr("action");
+          $.ajax({
+            method: "POST",
+            url: url,
+            data: form.serialize(),
+            success: function (data) {
+              // Ajax call completed successfully
+              alert("Form Submited Successfully");
+              document.getElementById("formId").reset();
+            },
+            error: function (data) {
+              // Some error in ajax call
+              alert("some Error");
+            },
+          });
+        });
+
+        var interval = 7000;
+        function doAjax() {
+          console.log("ajax call");
+          $.ajax({
+            type: "GET",
+            url:
+              "http://localhost:8083/api/v1/dashboard/getLatestComments/"+UUIDarr.toString(),
+            success: function (data) {
+              var trHTML = "";
+              data.forEach(function (obj) {
+                console.log(obj.commentText);
+
+                trHTML +=
+                  "<tr><td>" +
+                  obj.commentText +
+                  "</td><td>" +
+                  obj.createdDate +
+                  "</td></tr>";
+                UUIDarr.push(obj.commentUUID);
+              });
+              $("#commentsTable").append(trHTML);
+            },
+            complete: function (data) {
+              setTimeout(doAjax, interval);
+            },
+            error: function (data) {
+              console.log(error);
+              // Some error in ajax call
+              alert("some Error");
+            },
+          });
+        }
+        setTimeout(doAjax, interval);
+      });
 
     </script>
 </head>
 
 <body>
-
 <h1>Comments</h1>
 
 <div class="tbodyDiv">
-    <table class="table table-bordered table-striped text-center" id="commentsTable">
+    <table
+            class="table table-bordered table-striped text-center"
+            id="commentsTable"
+    >
         <thead class="sticky-top bg-white">
-        <tr><th>Comment</th><th>Date</th></tr>
+        <tr>
+            <th>Comment</th>
+            <th>Date</th>
+        </tr>
         </thead>
-        <tbody>
-
-        </tbody>
+        <tbody></tbody>
     </table>
 </div>
 
-<form id='formId' action='http://localhost:8083/api/v1/dashboard/addComment'>
-
-    <br> Add Comment:
-    <input type='text' id='commentText' name='commentText'>
-    <br>
-    <button type='submit' id='submitButton'>
-        Submit
-    </button>
+<form
+        id="formId"
+        action="http://localhost:8083/api/v1/dashboard/addComment"
+>
+    <br/>
+    Add Comment:
+    <input type="text" id="commentText" name="commentText"/>
+    <br/>
+    <button type="submit" id="submitButton">Submit</button>
 </form>
-
-
 </body>
-
 </html>

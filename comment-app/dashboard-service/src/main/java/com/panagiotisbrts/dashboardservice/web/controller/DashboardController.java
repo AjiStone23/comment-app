@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -31,7 +33,7 @@ public class DashboardController {
     }
 
 
-    @PostMapping(path ="addComment")
+    @PostMapping(path = "addComment")
     public ResponseEntity addComment(CommentRequest commentRequest) {
         log.info("new get comments request Dash");
 
@@ -40,30 +42,22 @@ public class DashboardController {
     }
 
 
-    @GetMapping(path ="getIndex")
+    @GetMapping(path = "getIndex")
     public String getIndex() {
         log.info("new get index request");
         return "index";
     }
 
 
-
-    @GetMapping(path ="getComments")
+    @GetMapping(value = {"getLatestComments", "getLatestComments/{commentUUIds}"})
     @ResponseBody
-    public  ResponseEntity<List<CommentResponse>> getComments() {
+    public ResponseEntity<List<CommentResponse>> getLatestComments(@PathVariable(required = false) Optional<List<String>> commentUUIds) {
         log.info("new get comments request");
 
-        List<CommentResponse> commentResponseList = dashboardService.getComments();
-        return new ResponseEntity<>(commentResponseList, HttpStatus.OK);
-    }
+        List<String> commentUUIdsList = commentUUIds.orElseGet(ArrayList::new);
 
-
-    @GetMapping(path ="getLatestComments")
-    @ResponseBody
-    public ResponseEntity<List<CommentResponse>>  getLatestComments() {
-        log.info("new get comments request");
-
-        List<CommentDto> commentDtoList = dashboardService.getLatestComments();
+        log.info(commentUUIdsList.toString());
+        List<CommentDto> commentDtoList = dashboardService.getLatestComments(commentUUIdsList);
         List<CommentResponse> commentResponseList = commentDtoList.stream().map(commentMapper::commentDtoToCommentResponse)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(commentResponseList, HttpStatus.OK);
