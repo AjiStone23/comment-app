@@ -37,12 +37,6 @@ public class CommentController {
         this.commentMapper = commentMapper;
     }
 
-    @PostMapping(path ="addComment")
-    public void addComment(@RequestBody CommentRequest commentRequest) {
-        log.info("new add comment request");
-        commentService.addComment(commentRequest);
-
-    }
 
     @GetMapping(path ="getComments")
     public ResponseEntity<List<CommentResponse>> getComments() {
@@ -55,5 +49,6 @@ public class CommentController {
 
         return new ResponseEntity<>(commentResponseList, HttpStatus.OK);
     }
+
 
 }

@@ -37,6 +37,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void addComment(CommentRequest commentRequest) {
+
         Comment comment = Comment.builder()
                 .commentText(commentRequest.getCommentText())
                 .createdDate(OffsetDateTime.now())

@@ -28,26 +28,22 @@ import java.util.stream.Collectors;
 public class DashboardServiceImpl implements DashboardService {
 
 
-    private final CommentClient commentClient;
     private final RabbitMQMessageProducer rabbitMQMessageProducer;
-    private final CommentMapper commentMapper;
 
     @Value("${rabbitmq.exchanges.internal}")
     private String internalExchange;
     @Value("${rabbitmq.routing-keys.internal-comment}")
     private String internalCommentRoutingKey;
 
-    public DashboardServiceImpl(RestTemplate restTemplate, CommentClient commentClient, RabbitMQMessageProducer rabbitMQMessageProducer, CommentMapper commentMapper) {
-        this.commentClient = commentClient;
+    public DashboardServiceImpl(RabbitMQMessageProducer rabbitMQMessageProducer) {
         this.rabbitMQMessageProducer = rabbitMQMessageProducer;
-        this.commentMapper = commentMapper;
     }
 
 
     @Override
     public void addComment(CommentRequest commentRequest) {
 
-        RabbitMessage<CommentRequest> message=  new RabbitMessage<>(RabbitMessage.Status.REQUESTED,commentRequest);
+        RabbitMessage<CommentRequest> message = new RabbitMessage<>(RabbitMessage.Status.REQUESTED, commentRequest);
 
         rabbitMQMessageProducer.publish(message, internalExchange, internalCommentRoutingKey);
 
