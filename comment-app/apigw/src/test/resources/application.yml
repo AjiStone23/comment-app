@@ -1,0 +1,25 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+
+        - id: dashboard-service
+          uri: lb://DASHBOARD-SERVICE
+          predicates:
+            - Path=/api/v1/dashboard/**
+
+        - id: comment-service
+          uri: lb://COMMENT-SERVICE
+          predicates:
+              - Path=/api/v1/comment/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    fetch-registry: false
+    register-with-eureka: false

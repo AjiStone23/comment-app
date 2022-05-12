@@ -1,0 +1,23 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: dashboard-service
+  rabbitmq:
+    addresses: localhost:5672
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    fetch-registry: false
+    register-with-eureka: false
+rabbitmq:
+  exchanges:
+    internal: internal.exchange
+    fanout: fanout.exchange
+  queues:
+    comment: comment.queue
+    dashboard: dashboard.queue
+  routing-keys:
+    internal-comment: internal.comment.routing-key
+    internal-dashboard: internal.dashboard.routing-key
