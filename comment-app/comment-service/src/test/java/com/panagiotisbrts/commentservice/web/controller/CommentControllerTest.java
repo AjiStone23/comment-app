@@ -1,20 +1,24 @@
 package com.panagiotisbrts.commentservice.web.controller;
 
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.panagiotisbrts.clients.commentservice.model.CommentDto;
 import com.panagiotisbrts.clients.commentservice.model.CommentResponse;
 import com.panagiotisbrts.commentservice.services.CommentService;
 import com.panagiotisbrts.commentservice.web.mappers.CommentMapper;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.json.JacksonTester;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -22,35 +26,35 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * @author Panagiotis_Baroutas
  */
 
-@AutoConfigureJsonTesters
-@WebMvcTest(CommentController.class)
+@ExtendWith(MockitoExtension.class)
 class CommentControllerTest {
 
-    @Autowired
+
     private MockMvc mvc;
-    @MockBean
+    @Mock
     CommentService commentService;
-    @MockBean
+    @Mock
     CommentMapper commentMapper;
 
-    @Autowired
+    @InjectMocks
+    CommentController commentController;
     private JacksonTester<List<CommentResponse>> jsonListCommentResponse;
 
     @BeforeEach
     void setUp() {
-    }
+        JacksonTester.initFields(this, JsonMapper.builder()
+                .addModule(new JavaTimeModule())
+                .build());
 
-    @AfterEach
-    void tearDown() {
+        mvc = MockMvcBuilders.standaloneSetup(commentController).build();
     }
 
     @Test
@@ -83,16 +87,17 @@ class CommentControllerTest {
         List<CommentResponse> commentResponseList = new ArrayList<>();
         commentResponseList.add(commentRes1);
         commentResponseList.add(commentRes2);
-
+//----------------------------------------------------------------------------------------given
         given(commentService.getComments()).willReturn(Arrays.asList(comment1, comment2));
         given(commentMapper.commentDtoToCommentResponse(comment1)).willReturn(commentRes1);
         given(commentMapper.commentDtoToCommentResponse(comment2)).willReturn(commentRes2);
-        mvc.perform(get("/api/v1/comment/getComments")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).
-                andExpect(content().string(jsonListCommentResponse.write(commentResponseList).getJson()));
+//----------------------------------------------------------------------------------------when
+        MockHttpServletResponse response = mvc.perform(get("/api/v1/comment/getComments")
+                .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
+//----------------------------------------------------------------------------------------then
         Mockito.verify(commentService).getComments();
-
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getContentAsString()).isEqualTo(jsonListCommentResponse.write(commentResponseList).getJson());
     }
 }

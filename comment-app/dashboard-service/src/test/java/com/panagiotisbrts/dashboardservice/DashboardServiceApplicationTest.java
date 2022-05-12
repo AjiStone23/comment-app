@@ -5,35 +5,33 @@ import com.panagiotisbrts.amqp.model.RabbitMessage;
 import com.panagiotisbrts.clients.commentservice.model.CommentDto;
 import com.panagiotisbrts.clients.commentservice.model.CommentRequest;
 import com.panagiotisbrts.clients.commentservice.model.CommentResponse;
-import com.panagiotisbrts.dashboardservice.web.controller.DashboardController;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 /**
  * @author Panagiotis_Baroutas
  */
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class DashboardServiceApplicationTest {
 
     @Autowired
-    private DashboardController controller;
+    private TestRestTemplate restTemplate;
 
     @SpyBean
     private RabbitMQMessageProducer rabbitMQMessageProducer;
@@ -48,10 +46,16 @@ class DashboardServiceApplicationTest {
 
     @Test
     void afterRequestPublishingMessage() {
+
         CommentRequest req = CommentRequest.builder().commentText("test").build();
-        controller.addComment(req);
-        RabbitMessage message = new RabbitMessage(RabbitMessage.Status.REQUESTED, req);
+
+        //-----------------------------------------------------------------------when
+        ResponseEntity<CommentResponse> response = restTemplate.postForEntity("/api/v1/dashboard/addComment", req, CommentResponse.class);
+        //---------------------------------------------------------------------------then
+        RabbitMessage<CommentRequest> message = new RabbitMessage<>(RabbitMessage.Status.REQUESTED, req);
         Mockito.verify(rabbitMQMessageProducer).publish(message, internalExchange, internalCommentRoutingKey);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
     }
 
     @Test
@@ -93,9 +97,9 @@ class DashboardServiceApplicationTest {
         UUIDList.add(matchUUID1);
         UUIDList.add(matchUUID2);
         Optional<List<String>> input = Optional.of(UUIDList);
-
-        ResponseEntity<List<CommentResponse>> res = controller.getLatestComments(input);
-
+//----------------------------------------------------------------------------------------when
+        ResponseEntity<CommentResponse[]> response = restTemplate.getForEntity
+                ("/api/v1/dashboard/getLatestComments/" + matchUUID1 + "," + matchUUID2, CommentResponse[].class);
 
         List<CommentResponse> expectedResultList = new ArrayList<>();
         expectedResultList.add(CommentResponse.builder()
@@ -103,8 +107,9 @@ class DashboardServiceApplicationTest {
                 .createdDate(noMatchDto.getCreatedDate())
                 .commentUUID(noMatchDto.getCommentUUID()).build());
 
-        Assertions.assertEquals(expectedResultList, res.getBody());
-        Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
+//----------------------------------------------------------------------------------------then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(Arrays.asList(response.getBody())).isEqualTo(expectedResultList);
     }
 
 

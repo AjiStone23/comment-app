@@ -34,7 +34,7 @@ public class DashboardController {
 
 
     @PostMapping(path = "addComment")
-    public ResponseEntity addComment(CommentRequest commentRequest) {
+    public ResponseEntity addComment(@RequestBody CommentRequest commentRequest) {
         log.info("new get comments request Dash");
         dashboardService.addComment(commentRequest);
         return new ResponseEntity(HttpStatus.CREATED);

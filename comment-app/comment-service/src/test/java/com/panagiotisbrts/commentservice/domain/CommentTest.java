@@ -9,7 +9,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
@@ -41,7 +43,7 @@ class CommentTest {
         Comment entity = Comment.builder().
                 commentText("entityText")
                 .commentUUID(UUID.randomUUID().toString())
-                .createdDate(OffsetDateTime.now().truncatedTo(ChronoUnit.MILLIS))
+                .createdDate(OffsetDateTime.ofInstant(Instant.now(), ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS))
                 .build();
 
         Comment persistedEntity = this.entityManager.persistFlushFind(entity);
