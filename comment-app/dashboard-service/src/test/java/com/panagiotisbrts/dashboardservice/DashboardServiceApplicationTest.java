@@ -33,6 +33,7 @@ class DashboardServiceApplicationTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+
     @SpyBean
     private RabbitMQMessageProducer rabbitMQMessageProducer;
 

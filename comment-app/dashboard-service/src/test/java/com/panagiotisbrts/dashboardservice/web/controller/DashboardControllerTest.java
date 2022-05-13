@@ -55,6 +55,7 @@ class DashboardControllerTest {
     private JacksonTester<List<CommentResponse>> jsonListCommentResponse;
 
 
+
     @BeforeEach
     void setUp() {
 
@@ -70,11 +71,11 @@ class DashboardControllerTest {
     void addComment() throws Exception {
         CommentRequest commentRequest = CommentRequest.builder().build();
 //----------------------------------------------------------------------------------------when
-        MockHttpServletResponse response = mvc.perform(post("/api/v1/dashboard/addComment", commentRequest)
-                        .accept(MediaType.APPLICATION_JSON))
+        MockHttpServletResponse response = mvc.perform(post("/api/v1/dashboard/addComment",commentRequest)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 //----------------------------------------------------------------------------------------then
-     //   Mockito.verify(dashboardService).addComment(commentRequest);
+        Mockito.verify(dashboardService).addComment(commentRequest);
         assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
     }
 
